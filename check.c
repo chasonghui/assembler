@@ -11,11 +11,10 @@ int is_valid(char *op, char *args)
     /*  							*/
 	/********************************/
 	char tmp[256];
-	char *start = strtok(temp,",");
+	strcpy(tmp,args);
+	char *start = strtok(tmp,",");
 	char *dest=strtok(NULL,",");
-	strcpy(tmp, args);
 	if(dest[0]=='$')return 0;
-	if((start[0]=='0'||start[0]=='('||start[0]=='-')&&(dest[0]=='-'||dest[0]=='('))
-	exit(0);
+	if((start[0]=='0'||start[0]=='('||start[0]=='-')&&(dest[0]=='-'||dest[0]=='('))return 0;
 	return 1;
 }

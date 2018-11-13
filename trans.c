@@ -21,18 +21,18 @@ int instr_trans(char *op, char *args, char* mcode)
 	start.op = strtok(args,",");
 	dest.op=strtok(NULL,",");
 
-	switch(start.op[0]=='$')
+	switch(start.op[0])
 	{
 	case '0':
 		if(strchr(start.op,'(')==NULL) 
 		{
-		start.type=mem_abs;
+		start.type=abst;
 		}
 		else
-		start.type = mem_disp;
+		start.type = dis;
 		break;
 	case '(':
-		start.type=mem_rel;
+		start.type=rel;
 		break;
 	case '$':
 		start.type = imm;
@@ -41,7 +41,7 @@ int instr_trans(char *op, char *args, char* mcode)
 		start.type = reg;
 		break;
 	case '-':
-		start.type =mem_disp;
+		start.type =dis;
 		break;
 	}
 	//=======================================
@@ -49,12 +49,12 @@ int instr_trans(char *op, char *args, char* mcode)
 	{
 	case '0':
 		if(strchr(dest.op,'(')==NULL)
-		dest.type= mem_abs;
+		dest.type= abst;
 		else
-		dest.type=mem_disp;
+		dest.type=dis;
 		break;
 	case '(':
-		dest.type = mem_rel;
+		dest.type = rel;
 		break;
 	case '$':
 		dest.type = imm;
@@ -63,18 +63,18 @@ int instr_trans(char *op, char *args, char* mcode)
 		dest.type = reg;
 		break;
 	case '-':
-		dest.type = mem_disp;
+		dest.type = dis;
 		break;
 	default:
 		printf("error\n");
-	
+		break;	
 	}
 	//1. register to register
 	if(start.type ==reg)
 	{
 	if(dest.type ==reg) strcpy(mcode,"89");
 	//5. register to register[eax]
-    else if(dest.type==mem_abs||dest.type==mem_rel||dest.type==mem_disp)strcpy(mcode,"a3");
+    else if(dest.type==abst||dest.type==rel||dest.type==dis)strcpy(mcode,"a3");
 	//6. immediate to register
 	else if(start.type==imm){
 	if(strcmp(dest.op,"%eax")==0)strcpy(mcode,"b8");
@@ -84,17 +84,17 @@ int instr_trans(char *op, char *args, char* mcode)
 	else if(strcmp(dest.op,"%esp")==0)strcpy(mcode,"bc");
 	else if(strcmp(dest.op,"%ebp")==0)strcpy(mcode,"bd");
 	else if(strcmp(dest.op,"%esi")==0)strcpy(mcode,"be");
-	else if(Strcmp(dest.op,"%edi")==0)strcpy(mcode,"bf");
+	else if(strcmp(dest.op,"%edi")==0)strcpy(mcode,"bf");
 
 	}
 	//3. memory to register
 	else if(dest.type==reg){
-	if(start.type==mem_disp) strcpy(mcode,"8b");
+	if(start.type==dis) strcpy(mcode,"8b");
 	}
 	else
 	{
 	//4.memory to register[eax]
-	if(strcmp(dest.op,"%eax")==0)strcpy(mcode,"a1");
+	if(strcmp(dest.op,"%eax")==0) strcpy(mcode,"a1");
 	//2.memory to register
 	else strcpy(mcode,"8b");
 	}
